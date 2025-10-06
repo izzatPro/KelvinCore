@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 )
@@ -63,11 +64,16 @@ func main() {
 		}
 		celsius := fahrenheitToCelsius(fahrenheit)
 		writeToFile(link, celsius, "°C")
-		fmt.Printf("%.2f Фаренгейта в Цельсиях: %.2f", fahrenheit, celsius)
+		fmt.Printf("%.2f Фаренгейта в Цельсиях: %.2f\n", fahrenheit, celsius)
+		data, err := readFromFile()
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(data)
 	default:
 		return
 	}
-}g
+}
 
 func writeToFile(link string, temperature float64, unit string) {
 	temperatureToString := fmt.Sprintf("%.2f%s\n", temperature, unit)
@@ -75,4 +81,14 @@ func writeToFile(link string, temperature float64, unit string) {
 	if err != nil {
 		fmt.Println("Ошибка записи в файл:", err)
 	}
+}
+
+func readFromFile() (string, error) {
+	data, err := os.ReadFile(link)
+	if err != nil {
+		fmt.Println("Мы не можем прочитать файл с таким названием.")
+		return "", errors.New("Файла с таким названием не существует")
+	}
+	dataToString := string(data)
+	return dataToString, nil
 }
